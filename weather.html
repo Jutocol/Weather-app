@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        #cityInput {
+            margin: 20px 0;
+        }
+        #weatherInfo {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <form onsubmit="getWeather(event)">
+        <input type="text" id="cityInput" placeholder="Enter city name" required>
+        <button type="submit">Get Weather</button>
+    </form>
+    <div id="weatherInfo"></div>
+
+    <script>
+        // JavaScript code will go here
+    </script>
+</body>
+</html>
+<!-- ... (other HTML code) ... -->
+
+<script>
+    async function getWeather(event) {
+        event.preventDefault();
+        const apiKey = "48d8507dfc18cc36ca3f25ede011cc51"; // Replace with your API key
+        const cityInput = document.getElementById("cityInput");
+        const cityName = cityInput.value.trim();
+
+        if (cityName === "") {
+            alert("Please enter a city name.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`);
+            const data = await response.json();
+
+            if (data.cod === 200) {
+                displayWeather(data);
+            } else {
+                alert("Weather data is not available.");
+            }
+        } catch (error) {
+            alert("Error: Unable to fetch weather data.");
+            console.error(error);
+        }
+    }
+
+    function displayWeather(data) {
+        const weatherInfo = document.getElementById("weatherInfo");
+        weatherInfo.innerHTML = `
+            <h2>Weather in ${data.name}, ${data.sys.country}:</h2>
+            <p>Description: ${data.weather[0].description}</p>
+            <p>Temperature: ${data.main.temp} °C</p>
+            <p>Humidity: ${data.main.humidity}%</p>
+            <p>Wind Speed: ${data.wind.speed} m/s</p>
+        `;
+    }
+</script>
